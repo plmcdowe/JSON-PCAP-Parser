@@ -230,7 +230,6 @@ def execute_functions(pcap, ingest,
                     examiner_writer.writerow([f'Source: {src}, with destination: {dest}, in frame: {frame}'])
             examiner_writer.writerow(['\n'])
 
-
     xss_RedFlags = {'<' : 1,
                     '>' : 1,
                     'script' : 1,
@@ -246,8 +245,7 @@ def execute_functions(pcap, ingest,
                     '&#62;' : 10,
                     '(String.fromCharCode(' : 20,
                     'eval(atob(' : 20,
-                    '.nasl' : 30
-                    }
+                    '.nasl' : 30}
     if var_cross_site.get():
         with open('XSS_examiner.csv', mode='a', newline='') as examiner_csv:
             examiner_writer = csv.writer(examiner_csv, delimiter=',')
@@ -275,17 +273,17 @@ def execute_functions(pcap, ingest,
 def main():
     root = tk.Tk()
     root.withdraw()
-
+    #tkinter file dialog defaults to json files
     filename = filedialog.askopenfilename(title="Select a file", filetypes=[("JSON files", "*.json"), ("All files", "*.*")])
-
+    #once a file is selected:
     if filename:
 
         with open(filename, 'r', encoding='utf-8') as pcap:
             ingest = json.load(pcap)
-            
+            #load the json formated pcap file into "ingest" and display new tkinter
             root = tk.Tk()
             tk.Label(root, text = 'Make one or more selections:').pack(pady=10)
-
+            #tkinter checkboxes for all parsing options available to the user:
             var_HTTP_sessions =     tk.IntVar(value=0, master=root)
             var_traversal =         tk.IntVar(value=0, master=root)
             var_login =             tk.IntVar(value=0, master=root)
@@ -305,7 +303,7 @@ def main():
             ttk.Checkbutton(root, text = 'TCP ISN deviation',               variable = var_TCP_sequences).pack(anchor='w')
             ttk.Checkbutton(root, text = 'Traceroute evidence',             variable = var_traceroute).pack(anchor='w')
             ttk.Checkbutton(root, text = 'Possible XSS events',             variable = var_cross_site).pack(anchor='w')
-            
+            #button calls the 'execute_functions' function passing the boolean check value of each option; also calls function 're_execute'
             ttk.Button(root, text='Execute Selected Functions', command = lambda: [execute_functions(pcap, ingest,
                                                                                                     var_HTTP_sessions,
                                                                                                     var_traversal,
@@ -320,7 +318,7 @@ def main():
     else:
         print("No file selected")
         sys.exit()
-
+#executed after all selected options passed to 'execute_funcitons' by button-press, are completed - allows user to loop or gracefully exit
 def re_execute(root):
     root.destroy()
 
