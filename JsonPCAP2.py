@@ -178,16 +178,17 @@ def execute_functions(pcap, ingest,
 def main():
     root = tk.Tk()
     root.withdraw()
-
+    #tkinter file dialog defaults to json files
     filename = filedialog.askopenfilename(title="Select a file", filetypes=[("JSON files", "*.json"), ("All files", "*.*")])
+    #once a file is selected:
     if filename:
-
+        
         with open(filename, 'r', encoding='utf-8') as pcap:
             ingest = json.load(pcap)
-            
+            #load the json formated pcap file into "ingest" and display new tkinter
             root = tk.Tk()
             tk.Label(root, text = 'Make one or more selections:').pack(pady=10)
-
+            #tkinter checkboxes for all parsing options available to the user:
             var_client_MAC_IP =     tk.IntVar(value=0, master=root)
             var_FTP_hostname =      tk.IntVar(value=0, master=root)
             var_facebook =          tk.IntVar(value=0, master=root)
@@ -195,7 +196,7 @@ def main():
             ttk.Checkbutton(root, text = 'All client MACs and IPs',     variable = var_client_MAC_IP).pack(anchor='w')            
             ttk.Checkbutton(root, text = 'FTP session and hostname',    variable = var_FTP_hostname).pack(anchor='w')
             ttk.Checkbutton(root, text = 'Facebook URIs',               variable = var_facebook).pack(anchor='w')
-            
+            #button calls the 'execute_functions' function passing the boolean check value of each option; also calls function 're_execute'
             ttk.Button(root, text='Execute Selected Functions', command = lambda: [execute_functions(pcap, ingest,
                                                                                                     var_client_MAC_IP,
                                                                                                     var_FTP_hostname,
@@ -205,7 +206,7 @@ def main():
     else:
         print("No file selected")
         sys.exit()
-
+#executed after all selected options passed to 'execute_funcitons' by button-press, are completed - allows user to loop or gracefully exit
 def re_execute(root):
     root.destroy()
 
